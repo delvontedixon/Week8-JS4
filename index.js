@@ -1,20 +1,44 @@
-class Student {
-  constructor(firstName, lastName, phoneNumber, grade) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.phoneNumber = phoneNumber;
-    this.grade = grade;
+class NotificationSender {
+  constructor(status) {
+    this.status = status;
   }
 
-  introduce() {
-    console.log(
-      `${this.firstName} ${this.lastName} can be reached at ${this.phoneNumber}`
-    );
+  sendNotification(notification) {
+    console.log("Sending: " + notification);
+  }
+
+  findUserWithStatus(status) {
+    let users = getUsers(status);
+    return users;
   }
 }
 
-let student1 = new Student("Del", "Dixon", "8507777777", "B");
-let student2 = new Student("Kelsy", "Leppo", "8508888888", "A");
+class PromotionSender extends NotificationSender {
+  constructor(status) {
+    super(status);
+  }
 
-student1.introduce();
-student2.introduce();
+  calculateDiscount(status) {
+    if (status === "GOLD") {
+      return 0.3;
+    } else if (status === "SILVER") {
+      return 0.15;
+    }
+    return 0;
+  }
+}
+
+class CollectionSender extends NotificationSender {
+  constructor(status) {
+    super(status);
+  }
+
+  calculateFee(status) {
+    if (status === "OVERDUE") {
+      return 10;
+    } else if (status === "DELIQUENT") {
+      return 25;
+    }
+    return 5;
+  }
+}
