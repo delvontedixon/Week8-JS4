@@ -1,44 +1,135 @@
-class NotificationSender {
-  constructor(status) {
-    this.status = status;
+class Player {
+  constructor(name, position) {
+    this.name = name;
+    this.position = position;
   }
-
-  sendNotification(notification) {
-    console.log("Sending: " + notification);
-  }
-
-  findUserWithStatus(status) {
-    let users = getUsers(status);
-    return users;
+  describe() {
+    return `${this.name} plays ${this.position}.`;
   }
 }
 
-class PromotionSender extends NotificationSender {
-  constructor(status) {
-    super(status);
+class Team {
+  constructor(name) {
+    this.name = name;
+    this.players = [];
   }
 
-  calculateDiscount(status) {
-    if (status === "GOLD") {
-      return 0.3;
-    } else if (status === "SILVER") {
-      return 0.15;
+  addPlayer(player) {
+    if (player instanceof Player) {
+      this.players.push(player);
+    } else {
+      throw new Error(
+        `You cn only add an instance of Player. Arguement is not a player: ${player}`
+      );
     }
-    return 0;
+  }
+  describe() {
+    return `${this.name} has ${this.players.length} players.`;
   }
 }
 
-class CollectionSender extends NotificationSender {
-  constructor(status) {
-    super(status);
+class Menu {
+  constructor() {
+    this.teams = [];
+    this.selectedTeam = null;
   }
 
-  calculateFee(status) {
-    if (status === "OVERDUE") {
-      return 10;
-    } else if (status === "DELIQUENT") {
-      return 25;
+  start() {
+    let selection = this.showMainMenuOptions();
+
+    while (selection != 0) {
+      switch (selection) {
+        case "1":
+          this.createTeam();
+          break;
+        case "2":
+          this.viewTeam();
+          break;
+        case "3":
+          this.deleteTeam();
+          break;
+        case "4":
+          this.displayTeams();
+          break;
+        default:
+          selection = 0;
+      }
+      selection = this.showMainMenuOptions();
     }
-    return 5;
+    alert("Goodbye!");
+  }
+
+  showMainMenuOptions() {
+    return prompt(`
+        0) exit
+        1) create new team
+        2) view team
+        3) delete
+        4) display all teams 
+        `);
+  }
+
+  showTeamMenuOptions(teamInfo) {
+    return prompt(`
+         0) back
+         1) create player
+         2) delete player
+         ---------------------
+         ${teamInfo}
+         `);
+  }
+
+  displayTeams() {
+    let teamString = "";
+    for (let i = 0; i < this.teams.length; i++) {
+      teamString += i + ") " + this.teams[i].name + "\n";
+    }
+    alert(teamString);
+  }
+  createTeam() {
+    let name = prompt("Enter name for new team:");
+    this.teams.push(new Team(name));
+  }
+
+  viewTeam() {
+    let index = prompt("Enter index of the team you wish to view");
+    if (index > -1 && index < this.teams.length) {
+      this.selectedTeam = this.teams[index];
+      let description = "Team Name: " + this.selectedTeam.name + "\n";
+
+      for (let i = 0; i < this.selectedTeam.players.length; i++) {
+        description +=
+          i +
+          ") " +
+          this.selectedTeam.players[i].name +
+          " - " +
+          this.selectedTeam.players[i].position +
+          "\n";
+      }
+
+      let selection = this.showTeamMenuOptions(description);
+      switch (selection) {
+        case "1":
+          this.createPlayer();
+          break;
+        case "2":
+          this.deletePlayer();
+      }
+    }
+  }
+
+  createPlayer() {
+    let name = prompt("Enter name for new player:");
+    let postition = prompt("Enter position for new player:");
+    this.selectedTeam.players.push(new Player(name, position));
+  }
+  deletedPlayer() {
+    let index = prompt("Enter the index of the player you wish to delete:");
+    if (index > -1 && index < this.selectedTeam.players.length) {
+      this.selectedTeam.players.splice(index, 1);
+    }
   }
 }
+
+let menu = new Menu();
+menu.start();
