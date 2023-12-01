@@ -120,7 +120,7 @@ class Menu {
 
   createPlayer() {
     let name = prompt("Enter name for new player:");
-    let postition = prompt("Enter position for new player:");
+    let position = prompt("Enter position for new player:");
     this.selectedTeam.players.push(new Player(name, position));
   }
   deletedPlayer() {
